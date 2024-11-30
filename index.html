@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA Dashboard</title>
-    <style>
-        .game, .team, .player {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBA Scores</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>NBA Dashboard</h1>
-    <div id="games"></div>
-    <div id="teams"></div>
-    <div id="players"></div>
-
-    <script src="script.js"></script>
+  <header>
+    <h1>NBA Live Scores</h1>
+  </header>
+  <main>
+    <input type="date" id="game-date" value="2024-11-30">
+    <button id="fetch-scores">Get Scores</button>
+    <div id="scores"></div>
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>
