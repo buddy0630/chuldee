@@ -1,49 +1,79 @@
-// Fetch live scores from iSports API
-async function fetchLiveScores() {
-    const apiKey = 'afsdUSvPtmMg8wc4'; // Your new API Key
-    const apiUrl = `https://api.isportsapi.com/sport/basketball/match/live?api_key=${apiKey}`;
+const API_URL = 'https://api.isportsapi.com/sport/basketball/nba';
+const API_KEY = 'VqK0NEvPlZ9mYz57';
 
-    try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        console.log('API Response:', data); // Debugging
-
-        if (data.code === 0) { // Check for successful response
-            displayScores(data.data);
-        } else {
-            console.error('API Error:', data.message);
-        }
-    } catch (error) {
-        console.error('Fetch Error:', error);
-    }
+// Fetch live game data
+async function fetchGames() {
+    const response = await fetch(`${API_URL}/games?apiKey=${API_KEY}`);
+    const data = await response.json();
+    displayGames(data.games);
 }
 
-// Display live scores on the page
-function displayScores(matches) {
-    const scoresContainer = document.getElementById('scores-container');
-    scoresContainer.innerHTML = ''; // Clear previous content
-
-    if (!matches || matches.length === 0) {
-        scoresContainer.innerHTML = '<p>No live matches available.</p>';
-        return;
-    }
-
-    matches.forEach(match => {
-        const matchCard = `
-            <div class="col-md-4 mb-4">
-                <div class="card bg-dark text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">${match.homeTeam.name} vs ${match.awayTeam.name}</h5>
-                        <p class="card-text">Score: ${match.homeTeam.score} - ${match.awayTeam.score}</p>
-                        <p class="card-text">Time: ${match.matchTime}</p>
-                    </div>
-                </div>
-            </div>
+// Display games on the scoreboard
+function displayGames(games) {
+    const gamesContainer = document.getElementById('games');
+    gamesContainer.innerHTML = '';
+    games.forEach(game => {
+        const gameDiv = document.createElement('div');
+        gameDiv.classList.add('game');
+        gameDiv.innerHTML = `
+            <h3>${game.home_team} vs. ${game.away_team}</h3>
+            <p>${game.home_score} - ${game.away_score}</p>
+            <p>Status: ${game.status}</p>
         `;
-        scoresContainer.innerHTML += matchCard;
+        gamesContainer.appendChild(gameDiv);
     });
 }
 
-// Call the function to fetch live scores
-fetchLiveScores();
+// Fetch team stats
+async function fetchTeamStats() {
+    const response = await fetch(`${API_URL}/teams?apiKey=${API_KEY}`);
+    const data = await response.json();
+    displayTeams(data.teams);
+}
+
+// Display team stats
+function displayTeams(teams) {
+    const teamsContainer = document.getElementById('teams');
+    teamsContainer.innerHTML = '';
+    teams.forEach(team => {
+        const teamDiv = document.createElement('div');
+        teamDiv.classList.add('team');
+        teamDiv.innerHTML = `
+            <h3>${team.name}</h3>
+            <p>Wins: ${team.wins}, Losses: ${team.losses}</p>
+        `;
+        teamsContainer.appendChild(teamDiv);
+    });
+}
+
+// Fetch player stats
+async function fetchPlayerStats() {
+    const response = await fetch(`${API_URL}/players?apiKey=${API_KEY}`);
+    const data = await response.json();
+    displayPlayers(data.players);
+}
+
+// Display player stats
+function displayPlayers(players) {
+    const playersContainer = document.getElementById('players');
+    playersContainer.innerHTML = '';
+    players.forEach(player => {
+        const playerDiv = document.createElement('div');
+        playerDiv.classList.add('player');
+        playerDiv.innerHTML = `
+            <h3>${player.name}</h3>
+            <p>Points: ${player.points}, Assists: ${player.assists}, Rebounds: ${player.rebounds}</p>
+        `;
+        playersContainer.appendChild(playerDiv);
+    });
+}
+
+// Initialize the dashboard
+function init() {
+    fetchGames();
+    fetchTeamStats();
+    fetchPlayerStats();
+    setInterval(fetchGames, 60000); // Refresh every minute
+}
+
+document.addEventListener('DOMContentLoaded', init);
