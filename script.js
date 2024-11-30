@@ -1,13 +1,17 @@
 const API_KEY = 'VqK0NEvPlZ9mYz57'; // Your API key
-const BASE_URL = 'https://api.isportsapi.com/sport/basketball/nba'; // Base API URL
+const BASE_URL = 'https://api.sportsdata.io/v4/nba/scores/json'; // Updated base URL
 
 // Fetch live game data
 async function fetchGames() {
     try {
-        const response = await fetch(`${BASE_URL}/livescores?api_key=${API_KEY}`); // Correct parameter name
+        const response = await fetch(`${BASE_URL}/GamesByDate/2024-11-30`, {
+            headers: {
+                'Ocp-Apim-Subscription-Key': API_KEY,
+            },
+        });
         const data = await response.json();
-        if (data.code === 0) { // Check for successful response
-            displayGames(data.data);
+        if (response.ok) {
+            displayGames(data); // Directly use the response data
         } else {
             console.error('Error fetching games:', data.message || 'Unknown error');
         }
@@ -19,14 +23,14 @@ async function fetchGames() {
 // Display games on the scoreboard
 function displayGames(games) {
     const gamesContainer = document.getElementById('games');
-    gamesContainer.innerHTML = '';
+    gamesContainer.innerHTML = ''; // Clear previous content
     games.forEach(game => {
         const gameDiv = document.createElement('div');
         gameDiv.classList.add('game');
         gameDiv.innerHTML = `
-            <h3>${game.homeTeam.name} vs. ${game.awayTeam.name}</h3>
-            <p>${game.homeTeam.score} - ${game.awayTeam.score}</p>
-            <p>Status: ${game.status}</p>
+            <h3>${game.HomeTeam} vs. ${game.AwayTeam}</h3>
+            <p>${game.HomeTeamScore || 0} - ${game.AwayTeamScore || 0}</p>
+            <p>Status: ${game.Status}</p>
         `;
         gamesContainer.appendChild(gameDiv);
     });
@@ -35,10 +39,14 @@ function displayGames(games) {
 // Fetch team stats
 async function fetchTeamStats() {
     try {
-        const response = await fetch(`${BASE_URL}/teams?api_key=${API_KEY}`); // Updated endpoint
+        const response = await fetch(`${BASE_URL}/Standings/2024`, {
+            headers: {
+                'Ocp-Apim-Subscription-Key': API_KEY,
+            },
+        });
         const data = await response.json();
-        if (data.code === 0) {
-            displayTeams(data.data);
+        if (response.ok) {
+            displayTeams(data); // Directly use the response data
         } else {
             console.error('Error fetching team stats:', data.message || 'Unknown error');
         }
@@ -55,8 +63,8 @@ function displayTeams(teams) {
         const teamDiv = document.createElement('div');
         teamDiv.classList.add('team');
         teamDiv.innerHTML = `
-            <h3>${team.name}</h3>
-            <p>Wins: ${team.win}, Losses: ${team.loss}</p>
+            <h3>${team.Name}</h3>
+            <p>Wins: ${team.Wins}, Losses: ${team.Losses}</p>
         `;
         teamsContainer.appendChild(teamDiv);
     });
@@ -64,40 +72,14 @@ function displayTeams(teams) {
 
 // Fetch player stats
 async function fetchPlayerStats() {
-    try {
-        const response = await fetch(`${BASE_URL}/players?api_key=${API_KEY}`); // Updated endpoint
-        const data = await response.json();
-        if (data.code === 0) {
-            displayPlayers(data.data);
-        } else {
-            console.error('Error fetching player stats:', data.message || 'Unknown error');
-        }
-    } catch (error) {
-        console.error('Error fetching player stats:', error);
-    }
-}
-
-// Display player stats
-function displayPlayers(players) {
-    const playersContainer = document.getElementById('players');
-    playersContainer.innerHTML = '';
-    players.forEach(player => {
-        const playerDiv = document.createElement('div');
-        playerDiv.classList.add('player');
-        playerDiv.innerHTML = `
-            <h3>${player.name}</h3>
-            <p>Points: ${player.points}, Assists: ${player.assists}, Rebounds: ${player.rebounds}</p>
-        `;
-        playersContainer.appendChild(playerDiv);
-    });
+    console.log('Note: SportsData.io does not provide individual player stats with their free NBA plan.');
 }
 
 // Initialize the dashboard
 function init() {
     fetchGames();
     fetchTeamStats();
-    fetchPlayerStats();
-    setInterval(fetchGames, 60000); // Refresh every minute
+    setInterval(fetchGames, 60000); // Refresh live scores every minute
 }
 
 document.addEventListener('DOMContentLoaded', init);

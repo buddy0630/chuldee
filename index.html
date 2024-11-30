@@ -3,28 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA Live Hub</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>NBA Dashboard</title>
+    <style>
+        .game, .team, .player {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>NBA Live Hub</h1>
-        <p>Real-time NBA Scores, Team Stats, and Player Stats</p>
-    </header>
-    <main>
-        <section id="scoreboard">
-            <h2>Live Scoreboard</h2>
-            <div id="games"></div>
-        </section>
-        <section id="team-stats">
-            <h2>Team Stats</h2>
-            <div id="teams"></div>
-        </section>
-        <section id="player-stats">
-            <h2>Player Stats</h2>
-            <div id="players"></div>
-        </section>
-    </main>
+    <h1>NBA Dashboard</h1>
+    <div id="games"></div>
+    <div id="teams"></div>
+    <div id="players"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
